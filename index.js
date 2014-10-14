@@ -36,3 +36,14 @@ hexpp.defaults = function (opts) {
   }
 }
 
+if(!module.parent && process.title != 'browser') {
+  var a = []
+  process.stdin
+  .on('data', function (b) {
+    a.push(b)
+  })
+  .on('end', function () {
+    console.log(hexpp(Buffer.concat(a)))
+  })
+
+}
