@@ -7,9 +7,11 @@
     "type": "git",
     "url": "git://github.com/dominictarr/hexpp.git"
   },
-  "dependencies": {},
+  "dependencies": {
+    "minimist": "~1.1.0"
+  },
   "devDependencies": {},
-  "bin": "./index.js",
+  "bin": "./bin.js",
   "scripts": {
     "test": "set -e; for t in test/*.js; do node $t; done"
   },
