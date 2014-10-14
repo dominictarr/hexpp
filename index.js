@@ -1,3 +1,4 @@
+#! /usr/bin/env node
 
 function toHex (buf, group, wrap, LE) {
   buf = buf.buffer || buf
