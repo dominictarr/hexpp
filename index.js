@@ -10,7 +10,7 @@ function toHex (buf, group, wrap, LE, ascii) {
     s = s + ((buf[byte]>>4).toString(16))
           + ((buf[byte]&0xf).toString(16))
           + (group-1==i%group ? ' ' : '')
-          + (wrap-1==i%wrap ? toAscii(buf.slice(i-wrap+1, i+1), i, wrap) + '\n' : '')
+          + (wrap-1==i%wrap ? toAscii(buf.slice(i-wrap+1, i+1)) + '\n' : '')
   }
   return s + '\n'
 }
@@ -24,8 +24,7 @@ function reverseByteOrder(n) {
   )
 }
 
-function asciipp(buf, i, wrap) {
-  console.log(i-wrap, i);
+function asciipp(buf) {
   var arr = [].slice.call(buf);
   // http://en.wikipedia.org/wiki/ASCII#ASCII_printable_characters
   var placeholder = '.'.charCodeAt(0);
