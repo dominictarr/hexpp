@@ -10,6 +10,13 @@ function toHex (buf, group, wrap, LE, ascii) {
           + (group-1==i%group ? ' ' : '')
           + (wrap-1==i%wrap ? toAscii(buf.slice(i-wrap+1, i+1)) + '\n' : '')
   }
+  var lastLine = l%wrap;
+  var filler = (wrap-lastLine)*2 + Math.floor((wrap-lastLine+group-1)/group);
+  if (ascii) {
+    while(filler--)
+      s += ' ';
+    s += toAscii(buf.slice(l-lastLine, l));
+  }
   return s + '\n'
 }
 
