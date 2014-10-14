@@ -1,5 +1,6 @@
 #! /usr/bin/env node
 
+var hexpp = require('./')
 var fs = require('fs')
 
 function usage () {
@@ -28,7 +29,7 @@ if(process.stdin.isTTY) {
   stream = process.stdin
 
 var a = []
-stdin
+stream
   .on('data', function (b) {
     a.push(b)
   })
