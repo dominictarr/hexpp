@@ -1,6 +1,7 @@
 #! /usr/bin/env node
 
-function toHex (buf, group, wrap, LE) {
+function toHex (buf, group, wrap, LE, ascii) {
+  toAscii = ascii ? asciipp : function() { return ''; };
   buf = buf.buffer || buf
   var s = ''
   var l = buf.byteLength || buf.length
@@ -9,7 +10,7 @@ function toHex (buf, group, wrap, LE) {
     s = s + ((buf[byte]>>4).toString(16))
           + ((buf[byte]&0xf).toString(16))
           + (group-1==i%group ? ' ' : '')
-          + (wrap-1==i%wrap ? '\n' : '')
+          + (wrap-1==i%wrap ? toAscii(buf.slice(i-wrap+1, i+1), i, wrap) + '\n' : '')
   }
   return s + '\n'
 }
@@ -23,11 +24,21 @@ function reverseByteOrder(n) {
   )
 }
 
+function asciipp(buf, i, wrap) {
+  console.log(i-wrap, i);
+  debugger;
+  var arr = [].slice.call(buf);
+  // http://en.wikipedia.org/wiki/ASCII#ASCII_printable_characters
+  var placeholder = '.'.charCodeAt(0);
+  var printables = arr.map(function(b) { return b > 0x19 && b < 0x7f ? b : placeholder; });
+  return String.fromCharCode.apply(null, printables);
+}
+
 var hexpp = module.exports = function (buffer, opts) {
   opts = opts || {}
   opts.groups = opts.groups || 4
   opts.wrap = opts.wrap || 16
-  return toHex(buffer, opts.groups, opts.wrap, opts.bigendian, opts.ints)
+  return toHex(buffer, opts.groups, opts.wrap, opts.bigendian, opts.ascii)
 }
 
 hexpp.defaults = function (opts) {
