@@ -26,6 +26,7 @@ if(process.stdin.isTTY) {
   else
     return usage()
 }
+else
   stream = process.stdin
 
 var a = []
