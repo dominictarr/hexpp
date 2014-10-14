@@ -26,7 +26,6 @@ function reverseByteOrder(n) {
 
 function asciipp(buf, i, wrap) {
   console.log(i-wrap, i);
-  debugger;
   var arr = [].slice.call(buf);
   // http://en.wikipedia.org/wiki/ASCII#ASCII_printable_characters
   var placeholder = '.'.charCodeAt(0);
