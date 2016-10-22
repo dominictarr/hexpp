@@ -1,52 +1,47 @@
-function toHex (buf, group, wrap, LE, ascii) {
-  toAscii = ascii ? asciipp : function() { return ''; };
-  buf = buf.buffer || buf
+
+var num = new Buffer(4)
+num.fill(0)
+function byte (n) {
+  if(n == null) return '  '
+  return (n >> 4).toString(16) + (n & 15).toString(16)
+}
+function lineNumber(i) {
+    num.writeUInt32BE(i, 0)
+    return num.toString('hex')
+
+}
+
+module.exports = function (buffer, start, end) {
+  start = start || 0
   var s = ''
-  var l = buf.byteLength || buf.length
-  for(var i = 0; i < l ; i++) {
-    var byte = (i&0xfffffffc)|(!LE ? i%4 : 3 - i%4)
-    s = s + ((buf[byte]>>4).toString(16))
-          + ((buf[byte]&0xf).toString(16))
-          + (group-1==i%group ? ' ' : '')
-          + (wrap-1==i%wrap ? toAscii(buf.slice(i-wrap+1, i+1)) + '\n' : '')
+  for(var i = 0; i < buffer.length; i += 16) {
+    var line = buffer.slice(i, Math.min(i+16, buffer.length))
+    s += lineNumber(i + start) + '  '
+    for(var j = 0; j < 16; j++) {
+      s += byte(line[j]) + ' '
+      if(j == 7)
+        s += ' '
+    }
+    s += ' |'
+    for(var k = 0; k < 16; k++) {
+      // http://en.wikipedia.org/wiki/ASCII#ASCII_printable_characters
+      if(line[k] >= 0x20 && line[k] <= 0x7e)
+        s += String.fromCodePoint(line[k])
+      else if(line[k] != null)
+        s += '.'
+    }
+    s += '|'
+    if(i < buffer.length - 16)
+      s += '\n'
   }
-  var lastLine = l%wrap;
-  var filler = (wrap-lastLine)*2 + Math.floor((wrap-lastLine+group-1)/group);
-  if (ascii) {
-    while(filler--)
-      s += ' ';
-    s += toAscii(buf.slice(l-lastLine, l));
-  }
-  return s + '\n'
+  if(end)
+  s += '\n' + lineNumber(buffer.length + start) + '\n'
+  return s
 }
 
-function reverseByteOrder(n) {
-  return (
-    ((n << 24) & 0xff000000)
-  | ((n <<  8) & 0x00ff0000)
-  | ((n >>  8) & 0x0000ff00)
-  | ((n >> 24) & 0x000000ff)
-  )
-}
 
-function asciipp(buf) {
-  var arr = [].slice.call(buf);
-  // http://en.wikipedia.org/wiki/ASCII#ASCII_printable_characters
-  var placeholder = '.'.charCodeAt(0);
-  var printables = arr.map(function(b) { return b > 0x19 && b < 0x7f ? b : placeholder; });
-  return String.fromCharCode.apply(null, printables);
-}
 
-var hexpp = module.exports = function (buffer, opts) {
-  opts = opts || {}
-  opts.groups = opts.groups || 4
-  opts.wrap = opts.wrap || 16
-  return toHex(buffer, opts.groups, opts.wrap, opts.bigendian, opts.ascii)
-}
 
-hexpp.defaults = function (opts) {
-  return function (b) {
-    return hexpp(b, opts)
-  }
-}
+
+
 

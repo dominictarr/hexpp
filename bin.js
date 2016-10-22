@@ -6,23 +6,14 @@ var fs = require('fs')
 function usage () {
   var out = console.error
   out('USAGE: ')
-  out('  hexpp {file} {options}')
-  out('  {source} | hexpp {options}')
-  out()
-  out('      -g,--groups N    # bytes before showing a space')
-  out('      -w,--wrap M      # bytes before wraping to another line')
-  out('      -a,--ascii       # show ascii output to right')
+  out('  hexpp {file}')
   process.exit(1)
 }
 
-var opts = require('minimist')(process.argv.slice(2), {
-  alias: {g: 'groups', w: 'wrap', a: 'ascii'}
-})
-
 var stream
 if(process.stdin.isTTY) {
-  if(opts._)
-    stream = fs.createReadStream(opts._[0])
+  if(process.argv[2])
+    stream = fs.createReadStream(process.argv[2])
   else
     return usage()
 }
@@ -35,6 +26,7 @@ stream
     a.push(b)
   })
   .on('end', function () {
-    console.log(hexpp(Buffer.concat(a), opts))
+    console.log(hexpp(Buffer.concat(a)))
   })
+
 

@@ -1,33 +1,34 @@
 # hexpp
 
-Pretty print buffers with configurable grouping and wrapping.
-more useful than node's Buffer#toString()
+Pretty print buffers in the same format as `hexdump -C`
 
 ``` js
 var hexpp = require('hexpp')
 var binary = new Buffer('hello, binary world!')
 
-console.log(hexpp(binary, {groups: 4, wrap: 16}))
+console.log(hexpp(binary))
 
 ```
 output:
 
 ```
-68656c6c 6f2c2062 696e6172 7920776f
-726c6421
-
+00000000  68 65 6c 6c 6f 2c 20 62  69 6e 61 72 79 20 77 6f  |hello, binary wo|
+00000010  72 6c 64 21                                       |rld!|
 ```
 
-## hexpp(buffer, opts={groups: n, wrap: m, ascii})
+## hexpp(buffer, line, showLength)
 
 `buffer` is a binary buffer,
-and opts is an optional object,
-`groups` is how many bytes before a space is inserted (default 4),
-`wrap` is how many bytes before a newline is inserted (default 16),
-`ascii` is whether to display ascii printables (non-printables replaced with '.')
 
-it will look weird if `wrap` is not a multiple of `groups`.
+if `line` is provided, it will be added to the line number (left column)
+you should use this if you are printing a stream of buffers with more than one call to hexpp.
+
+if `showLength` is true, return a final line with the length of the total buffer in the line column.
+
 
 ## License
 
 MIT
+
+
+
