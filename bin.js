@@ -14,8 +14,10 @@ var stream
 if(process.stdin.isTTY) {
   if(process.argv[2])
     stream = fs.createReadStream(process.argv[2])
-  else
-    return usage()
+  else {
+    usage()
+    process.exit(0)
+  }
 }
 else
   stream = process.stdin
